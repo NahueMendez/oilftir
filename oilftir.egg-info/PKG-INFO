@@ -1,7 +1,25 @@
+Metadata-Version: 2.4
+Name: oilftir
+Version: 0.1.0
+Summary: FTIR-based condition monitoring of lubricating oils — ASTM E2412 toolkit
+Author: Nahuel Mendez
+Author-email: Nahuel Mendez <nahueldanielmendez@gmail.com>
+License: MIT
+Project-URL: Homepage, https://github.com/NahueMendez/oilftir
+Project-URL: LinkedIn, https://www.linkedin.com/in/ingnahuelmendez/
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: scipy
+Requires-Dist: matplotlib
+Requires-Dist: pybaselines
+Provides-Extra: specio
+Requires-Dist: specio; extra == "specio"
+Dynamic: author
+Dynamic: requires-python
+
 # oilftir
-<<<<<<< HEAD
-A Python library to simplify and optimize oil analysis using FTIR in accordance with the guidelines of ASTM E2412
-=======
 
 **FTIR-based condition monitoring of lubricating oils — ASTM E2412**
 
@@ -189,25 +207,6 @@ plot_spectra(data_dict, title, xlim, ylim_A, ylim_T, save_path)
 
 Contributions are welcome. Please open an issue or pull request on GitHub.
 
----
-## Authors
-`oilftir` was developed at the Chemistry Laboratory of CENADIF ([Centro Nacional de Desarrollo e Innovación Ferroviaria](https://www.argentina.gob.ar/transporte/fase/cenadif)), Argentina, in the context of used-oil condition monitoring for the local railway industry.
-
-### Lead developer
-
-**Nahuel Mendez** — R&D Engineer/Physical Data Scientist, CENADIF |
-
-[![GitHub](https://img.shields.io/badge/GitHub-NahueMendez-181717?logo=github)](https://github.com/NahueMendez)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-ingnahuelmendez-0A66C2?logo=linkedin)](https://www.linkedin.com/in/ingnahuelmendez/)
-[![Email](https://img.shields.io/badge/Email-nahueldanielmendez%40gmail.com-D14836?logo=gmail)](mailto:nahueldanielmendez@gmail.com)
-
-
-### Collaborators
-
-| Name | Role |
-| :--- | :--- |
-| **Hernán Gomez Molino**, Eng. | Head of Laboratories, CENADIF |
-| **Leandro Asens**, Eng. | Head of the Chemistry Laboratory, CENADIF |
 ---
 
 ## Citing

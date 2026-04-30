@@ -1,0 +1,10 @@
+README.md
+pyproject.toml
+setup.py
+oilftir/astm_utils.py
+oilftir/init.py
+oilftir.egg-info/PKG-INFO
+oilftir.egg-info/SOURCES.txt
+oilftir.egg-info/dependency_links.txt
+oilftir.egg-info/requires.txt
+oilftir.egg-info/top_level.txt
