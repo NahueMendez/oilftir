@@ -1,7 +1,4 @@
 # oilftir
-<<<<<<< HEAD
-A Python library to simplify and optimize oil analysis using FTIR in accordance with the guidelines of ASTM E2412
-=======
 
 **FTIR-based condition monitoring of lubricating oils — ASTM E2412**
 
