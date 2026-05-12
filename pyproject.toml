@@ -38,6 +38,7 @@ specio = ["specio"]
 
 [project.urls]
 Homepage   = "https://github.com/NahueMendez/oilftir"
+Documentation = "https://oilftir.readthedocs.io/en/latest/"
 LinkedIn   = "https://www.linkedin.com/in/ingnahuelmendez/"
 
 [tool.setuptools.packages.find]

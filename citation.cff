@@ -1,0 +1,15 @@
+cff-version: 0.1.1
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Mendez"
+  given-names: "Nahuel"
+  orcid: "https://orcid.org/0009-0004-6140-3716" # Reemplaza con tu ORCID si tienes uno
+- family-names: "Gomez Molino"
+  given-names: "Hernán"
+- family-names: "Asens"
+  given-names: "Leandro"
+title: "oilftir: A Python library for FTIR-based condition monitoring of lubricating oils following ASTM E2412"
+version: 0.1.1
+doi: 10.5281/zenodo.20137608 # Reemplaza con el DOI que te dio Zenodo
+date-released: 2026-05-12
+url: "https://github.com"
