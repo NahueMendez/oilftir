@@ -1,0 +1,381 @@
+oilftir.astm_utils
+==================
+
+.. py:module:: oilftir.astm_utils
+
+.. autoapi-nested-parse::
+
+   astm_utils.py
+   ==================
+   FTIR Spectrum Processing Utilities for Lubricating Oil Analysis
+   Based on ASTM E2412 standard methodology.
+
+   Provides:
+     - Spectrum loading (CSV/TXT; optional PerkinElmer .sp via specio)
+     - Baseline correction and spectral normalisation
+     - Net area calculation for ASTM-defined absorption bands
+     - Hit Quality Index (HQI) library search
+     - General-purpose plotting
+
+   Dependencies
+   ------------
+     numpy, pandas, scipy, matplotlib, pybaselines
+     specio (optional – only needed for .sp files)
+
+   Usage example
+   -------------
+     from oilftir.astm_utils import load_spectrum, astm_areas
+
+     df, meta = load_spectrum("sample.csv")
+     results = astm_areas(df)
+     print(results)
+
+   .. rubric:: References
+
+   ASTM E2412-23  Standard Practice for Condition Monitoring of Used Lubricants
+                  by Trend Analysis Using Fourier Transform Infrared (FT-IR)
+                  Spectrometry
+
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   oilftir.astm_utils.load_spectrum
+   oilftir.astm_utils.remove_baseline
+   oilftir.astm_utils.scale_reference
+   oilftir.astm_utils.subtract_reference
+   oilftir.astm_utils.area_oxidation
+   oilftir.astm_utils.area_nitration
+   oilftir.astm_utils.area_sulfation
+   oilftir.astm_utils.area_water
+   oilftir.astm_utils.area_glycol
+   oilftir.astm_utils.area_fuel_petrol
+   oilftir.astm_utils.area_fuel_diesel
+   oilftir.astm_utils.area_antiwear_zddp
+   oilftir.astm_utils.soot_load
+   oilftir.astm_utils.astm_areas
+   oilftir.astm_utils.area_to_concentration
+   oilftir.astm_utils.hqi
+   oilftir.astm_utils.library_search
+   oilftir.astm_utils.plot_spectra
+
+
+Module Contents
+---------------
+
+.. py:function:: load_spectrum(path: str, magnitude: str = 'A') -> tuple[pandas.DataFrame, dict]
+
+   Load an FTIR spectrum from a file.
+
+   Supported formats
+   -----------------
+   * CSV / TXT  – two-column file (wavenumber, amplitude); delimiter is
+                  auto-detected (comma or whitespace).
+   * .sp        – PerkinElmer binary format (requires the *specio* package).
+
+   :param path: Path to the spectrum file.
+   :type path: :py:class:`str`
+   :param magnitude: Indicates whether amplitudes in the file are Absorbance ('A') or
+                     Transmittance ('T', expressed as a fraction 0–1 or percentage 0–100).
+   :type magnitude: ``{'A', 'T'}``
+
+   :returns: * **df** (:py:class:`pd.DataFrame`) -- Columns: ``cm-1`` (wavenumber), ``A`` (absorbance), ``T``
+               (transmittance 0–1).
+             * **meta** (:py:class:`dict`) -- Metadata extracted from the file (empty dict for plain text files).
+
+   :raises ValueError: If *magnitude* is not 'A' or 'T'.
+   :raises ImportError: If a .sp file is requested but *specio* is not installed.
+
+
+.. py:function:: remove_baseline(df: pandas.DataFrame, units: str = 'A', poly_order: int = 5) -> pandas.DataFrame
+
+   Subtract a polynomial baseline from the spectrum using the modified
+   polynomial method (ModPoly).
+
+   :param df: Spectrum DataFrame with columns ``cm-1`` and *units*.
+   :type df: :py:class:`pd.DataFrame`
+   :param units: Column to correct ('A' or 'T').
+   :type units: :py:class:`str`
+   :param poly_order: Degree of the fitting polynomial (default 5).
+   :type poly_order: :py:class:`int`
+
+   :returns: Copy of *df* with the baseline subtracted in-place.
+   :rtype: :py:class:`pd.DataFrame`
+
+
+.. py:function:: scale_reference(df_sample: pandas.DataFrame, df_ref: pandas.DataFrame, units: str = 'A') -> pandas.DataFrame
+
+   Scale a reference spectrum to best match a sample spectrum using
+   least-squares projection (scalar factor *k*).
+
+   The scaling factor is computed as:
+
+       k = (sample · reference) / (reference · reference)
+
+   :param df_sample: Sample spectrum.
+   :type df_sample: :py:class:`pd.DataFrame`
+   :param df_ref: Reference spectrum to be scaled.
+   :type df_ref: :py:class:`pd.DataFrame`
+   :param units: Column used for comparison.
+   :type units: :py:class:`str`
+
+   :returns: Scaled copy of *df_ref*.
+   :rtype: :py:class:`pd.DataFrame`
+
+
+.. py:function:: subtract_reference(df_sample: pandas.DataFrame, df_ref: pandas.DataFrame, wavenumber_range: tuple[float, float], units: str = 'A') -> tuple[numpy.ndarray, float, numpy.ndarray]
+
+   Scale and subtract a reference spectrum from a sample spectrum over a
+   specified wavenumber range.
+
+   The reference is first interpolated onto the sample's wavenumber axis,
+   then scaled using the least-squares projection within *wavenumber_range*.
+
+   :param df_sample: Sample spectrum.
+   :type df_sample: :py:class:`pd.DataFrame`
+   :param df_ref: Reference spectrum (may have a different wavenumber axis).
+   :type df_ref: :py:class:`pd.DataFrame`
+   :param wavenumber_range: ``(k_min, k_max)`` – region used to compute the scaling factor.
+   :type wavenumber_range: :py:class:`(float`, :py:class:`float)`
+   :param units: Column to use ('A' or 'T').
+   :type units: :py:class:`str`
+
+   :returns: * **y_diff** (:py:class:`np.ndarray`) -- Difference spectrum (sample − scaled reference).
+             * **k** (:py:class:`float`) -- Scaling factor applied to the reference.
+             * **y_ref_scaled** (:py:class:`np.ndarray`) -- Scaled reference interpolated onto the sample axis.
+
+
+.. py:function:: area_oxidation(df: pandas.DataFrame) -> float
+
+   Oxidation band area (1800–1670 cm⁻¹) – ASTM E2412.
+
+   Baseline anchored at the minima in 550–650 cm⁻¹ and 1900–2200 cm⁻¹.
+
+   :param df: Spectrum with columns ``cm-1`` and ``A``.
+   :type df: :py:class:`pd.DataFrame`
+
+   :returns: Net integrated area (absorbance·cm⁻¹).
+   :rtype: :py:class:`float`
+
+
+.. py:function:: area_nitration(df: pandas.DataFrame) -> float
+
+   Nitration band area (1600–1650 cm⁻¹) – ASTM E2412.
+
+   Baseline anchored at the minima in 550–650 cm⁻¹ and 1900–2200 cm⁻¹.
+
+   :param df: Spectrum with columns ``cm-1`` and ``A``.
+   :type df: :py:class:`pd.DataFrame`
+
+   :returns: Net integrated area (absorbance·cm⁻¹).
+   :rtype: :py:class:`float`
+
+
+.. py:function:: area_sulfation(df: pandas.DataFrame) -> float
+
+   Sulfation band area (1120–1180 cm⁻¹) – ASTM E2412.
+
+   Baseline anchored at the minima in 550–650 cm⁻¹ and 1900–2200 cm⁻¹.
+
+   :param df: Spectrum with columns ``cm-1`` and ``A``.
+   :type df: :py:class:`pd.DataFrame`
+
+   :returns: Net integrated area (absorbance·cm⁻¹).
+   :rtype: :py:class:`float`
+
+
+.. py:function:: area_water(df: pandas.DataFrame) -> float
+
+   Water contamination band area (3150–3500 cm⁻¹) – ASTM E2412.
+
+   Baseline anchored at the minima in 1900–2200 cm⁻¹ and 3680–4000 cm⁻¹.
+
+   :param df: Spectrum with columns ``cm-1`` and ``A``.
+   :type df: :py:class:`pd.DataFrame`
+
+   :returns: Net integrated area (absorbance·cm⁻¹).
+   :rtype: :py:class:`float`
+
+
+.. py:function:: area_glycol(df: pandas.DataFrame) -> float
+
+   Ethylene glycol (coolant) band area (1030–1100 cm⁻¹) – ASTM E2412.
+
+   Baseline anchored at the minima in 1010–1030 cm⁻¹ and 1100–1130 cm⁻¹.
+
+   :param df: Spectrum with columns ``cm-1`` and ``A``.
+   :type df: :py:class:`pd.DataFrame`
+
+   :returns: Net integrated area (absorbance·cm⁻¹).
+   :rtype: :py:class:`float`
+
+
+.. py:function:: area_fuel_petrol(df: pandas.DataFrame) -> float
+
+   Petrol (gasoline) fuel dilution band area (745–755 cm⁻¹) – ASTM E2412.
+
+   Baseline anchored at the minima in 730–750 cm⁻¹ and 760–780 cm⁻¹.
+
+   :param df: Spectrum with columns ``cm-1`` and ``A``.
+   :type df: :py:class:`pd.DataFrame`
+
+   :returns: Net integrated area (absorbance·cm⁻¹).
+   :rtype: :py:class:`float`
+
+
+.. py:function:: area_fuel_diesel(df: pandas.DataFrame) -> float
+
+   Diesel fuel dilution band area (805–815 cm⁻¹) – ASTM E2412.
+
+   Baseline anchored at the minima in 795–805 cm⁻¹ and 825–835 cm⁻¹.
+
+   :param df: Spectrum with columns ``cm-1`` and ``A``.
+   :type df: :py:class:`pd.DataFrame`
+
+   :returns: Net integrated area (absorbance·cm⁻¹).
+   :rtype: :py:class:`float`
+
+   .. rubric:: Notes
+
+   The raw integrated area is returned. Convert to a concentration using
+   a laboratory-specific calibration curve.
+
+
+.. py:function:: area_antiwear_zddp(df: pandas.DataFrame) -> float
+
+   ZDDP antiwear additive band area (960–1025 cm⁻¹) – ASTM E2412.
+
+   Baseline anchored at the minima in 550–650 cm⁻¹ and 1900–2200 cm⁻¹.
+
+   :param df: Spectrum with columns ``cm-1`` and ``A``.
+   :type df: :py:class:`pd.DataFrame`
+
+   :returns: Net integrated area (absorbance·cm⁻¹).
+   :rtype: :py:class:`float`
+
+
+.. py:function:: soot_load(df: pandas.DataFrame) -> float
+
+   Soot (carbon black) load index – ASTM E2412.
+
+   The absorbance at the carbon-black scattering reference point (2000 cm⁻¹)
+   is multiplied by 100 to yield a dimensionless index.
+
+   :param df: Spectrum with columns ``cm-1`` and ``A``.
+   :type df: :py:class:`pd.DataFrame`
+
+   :returns: Soot index (dimensionless, ≥ 0).
+   :rtype: :py:class:`float`
+
+
+.. py:function:: astm_areas(df: pandas.DataFrame) -> dict
+
+   Compute all standard ASTM E2412 band areas in a single call.
+
+   :param df: Spectrum with columns ``cm-1`` and ``A``.
+   :type df: :py:class:`pd.DataFrame`
+
+   :returns: Keys: ``oxidation``, ``nitration``, ``sulfation``, ``water``,
+             ``glycol``, ``fuel_petrol``, ``fuel_diesel``, ``antiwear_zddp``,
+             ``soot``.
+   :rtype: :py:class:`dict`
+
+
+.. py:function:: area_to_concentration(area: float, calibration_areas: numpy.ndarray, calibration_concentrations: numpy.ndarray, poly_order: int = 3) -> float
+
+   Convert a band area to a concentration using a polynomial calibration curve.
+
+   Build and apply your own calibration curve by providing known
+   (area, concentration) pairs measured on your instrument.
+
+   :param area: Measured band area to convert.
+   :type area: :py:class:`float`
+   :param calibration_areas: Band areas of the calibration standards.
+   :type calibration_areas: :py:class:`array-like`
+   :param calibration_concentrations: Corresponding concentrations (same units as desired output).
+   :type calibration_concentrations: :py:class:`array-like`
+   :param poly_order: Degree of the fitting polynomial (default 3).
+   :type poly_order: :py:class:`int`
+
+   :returns: Estimated concentration (≥ 0).
+   :rtype: :py:class:`float`
+
+   .. rubric:: Example
+
+   >>> # Example: water content calibration
+   >>> cal_areas = np.array([0.0, 70.0, 87.0, 120.0, 144.0])
+   >>> cal_conc  = np.array([0.0,  2.0,  4.0,   5.0,  10.0])  # % v/v
+   >>> conc = area_to_concentration(measured_area, cal_areas, cal_conc)
+
+
+.. py:function:: hqi(x_query: numpy.ndarray, y_query: numpy.ndarray, x_ref: numpy.ndarray, y_ref: numpy.ndarray) -> float
+
+   Compute the Hit Quality Index (HQI) between two spectra.
+
+   HQI is defined as the squared cosine similarity (0–100 %):
+
+       HQI = 100 × (A·B)² / (‖A‖² · ‖B‖²)
+
+   The reference is interpolated onto the query's wavenumber axis using
+   the overlapping region only.
+
+   :param x_query: Query spectrum (wavenumber, absorbance).
+   :type x_query: :py:class:`np.ndarray`
+   :param y_query: Query spectrum (wavenumber, absorbance).
+   :type y_query: :py:class:`np.ndarray`
+   :param x_ref: Reference spectrum.
+   :type x_ref: :py:class:`np.ndarray`
+   :param y_ref: Reference spectrum.
+   :type y_ref: :py:class:`np.ndarray`
+
+   :returns: HQI score in percent (0–100).
+   :rtype: :py:class:`float`
+
+
+.. py:function:: library_search(query_path: str, library_dir: str, top_n: int = 5, extension: str = '*.sp') -> list[dict]
+
+   Parallel brute-force HQI library search.
+
+   Loads the query spectrum, then compares it against every file matching
+   *extension* in *library_dir* (and subdirectories) using the Hit Quality
+   Index.
+
+   :param query_path: Path to the query spectrum file.
+   :type query_path: :py:class:`str`
+   :param library_dir: Root directory of the reference library.
+   :type library_dir: :py:class:`str`
+   :param top_n: Number of top matches to display.
+   :type top_n: :py:class:`int`
+   :param extension: Glob pattern for candidate files (e.g. ``'*.sp'``, ``'*.txt'``).
+   :type extension: :py:class:`str`
+
+   :returns: All valid results sorted by HQI (descending), each with keys
+             ``'file'`` and ``'hqi'``.
+   :rtype: :py:class:`list[dict]`
+
+
+.. py:function:: plot_spectra(data_dict: dict, title: str = 'FTIR Spectroscopy', xlim: tuple = (4000, 450), ylim_A: tuple = (0, 0.4), ylim_T: tuple = (0, 1), save_path: str | None = None) -> tuple
+
+   Plot one or more FTIR spectra (absorbance and transmittance panels).
+
+   :param data_dict: ``{'Label': {'df': df, 'color': 'black', 'alpha': 1.0, 'linewidth': 2}}``
+                     Only ``'df'`` is required per entry.
+   :type data_dict: :py:class:`dict`
+   :param title: Figure title.
+   :type title: :py:class:`str`
+   :param xlim: Wavenumber axis limits (default: 4000–450 cm⁻¹).
+   :type xlim: :py:class:`(float`, :py:class:`float)`
+   :param ylim_A: Absorbance axis limits.
+   :type ylim_A: :py:class:`(float`, :py:class:`float)`
+   :param ylim_T: Transmittance axis limits.
+   :type ylim_T: :py:class:`(float`, :py:class:`float)`
+   :param save_path: If given, the figure is saved to this path (PNG/PDF/SVG).
+   :type save_path: :py:class:`str` or :py:obj:`None`
+
+   :returns: **fig, axes**
+   :rtype: :py:class:`matplotlib Figure` and :py:class:`Axes array`
+
+

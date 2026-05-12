@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-ftir_astm_utils.py
+astm_utils.py
 ==================
 FTIR Spectrum Processing Utilities for Lubricating Oil Analysis
 Based on ASTM E2412 standard methodology.
@@ -19,7 +19,7 @@ Dependencies
 
 Usage example
 -------------
-  from ftir_astm_utils import load_spectrum, astm_areas
+  from oilftir.astm_utils import load_spectrum, astm_areas
 
   df, meta = load_spectrum("sample.csv")
   results = astm_areas(df)
@@ -32,13 +32,12 @@ References
                  Spectrometry
 """
 
-import os
+from __future__ import annotations
 import re
 import struct
 import time
 import concurrent.futures
 from pathlib import Path
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -761,7 +760,7 @@ def library_search(query_path: str, library_dir: str,
     print(f"Searching {len(candidates)} files ({extension}) …")
 
     t0 = time.time()
-    with concurrent.futures.ProcessPoolExecutor() as pool:
+    with concurrent.futures.ThreadPoolExecutor() as pool:
         futures = [pool.submit(_hqi_worker, p, x_q, y_q) for p in candidates]
         results = [f.result() for f in concurrent.futures.as_completed(futures)]
     elapsed = time.time() - t0

@@ -51,7 +51,7 @@ pip install -e .
 ## Quick start
 
 ```python
-from oilftir import load_spectrum, remove_baseline, astm_areas
+from oilftir.astm_utils import load_spectrum, remove_baseline, astm_areas
 
 # Load and correct a spectrum
 df, meta = load_spectrum("used_oil.csv", magnitude="A")
@@ -209,13 +209,27 @@ Contributions are welcome. Please open an issue or pull request on GitHub.
 
 ## Citing
 
-If you use `oilftir` in academic work, please cite the ASTM standard it
-implements:
+If you use `oilftir` in your research or academic work, please cite both the ASTM standard and this software library:
 
-> ASTM E2412-23, *Standard Practice for Condition Monitoring of Used
-> Lubricants by Trend Analysis Using Fourier Transform Infrared (FT-IR)
-> Spectrometry*, ASTM International, West Conshohocken, PA.
+### 1. The Software Library
+> Mendez, N., Gomez Molino, H., & Asens, L. (2026). *oilftir: A Python library for FTIR-based condition monitoring of lubricating oils following ASTM E2412*. Zenodo. doi.org
 
+### 2. The Implemented Standard
+> ASTM E2412-23, *Standard Practice for Condition Monitoring of Used Lubricants by Trend Analysis Using Fourier Transform Infrared (FT-IR) Spectrometry*, ASTM International, West Conshohocken, PA.
+
+You can also use the following BibTeX entry for your reference manager:
+
+```bibtex
+@software{mendez_oilftir_2026,
+  author       = {Mendez, Nahuel and Gomez Molino, Hern{\'a}n and Asens, Leandro},
+  title        = {oilftir: A Python library for FTIR-based condition monitoring of lubricating oils following ASTM E2412},
+  month        = may,
+  year         = 2026,
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.XXXXXXX},
+  url          = {doi.org}
+}
+```
 ---
 
 ## License
@@ -223,7 +237,7 @@ implements:
 ```
 MIT License
 
-Copyright (c) 2025 oilftir contributors
+Copyright (c) 2026 oilftir contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
