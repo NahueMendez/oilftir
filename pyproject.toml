@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "oilftir"
-version = "0.1.0"
+version = "0.1.1"
 description = "FTIR-based condition monitoring of lubricating oils — ASTM E2412 toolkit"
 authors = [
   { name = "Nahuel Mendez", email = "nahueldanielmendez@gmail.com" }
@@ -12,6 +12,19 @@ authors = [
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.10"
+keywords = ["ftir", "astm-e2412", "lubricating-oil", "condition-monitoring", "spectroscopy", "tribology"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Manufacturing",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "Topic :: Scientific/Engineering :: Physics",
+]
 dependencies = [
   "numpy",
   "pandas",

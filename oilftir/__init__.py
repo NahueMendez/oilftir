@@ -20,5 +20,5 @@ from .astm_utils import (
     plot_spectra,
 )
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __author__  = "Nahuel Mendez"

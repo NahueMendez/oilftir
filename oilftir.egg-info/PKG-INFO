@@ -1,14 +1,26 @@
 Metadata-Version: 2.4
 Name: oilftir
-Version: 0.1.0
+Version: 0.1.1
 Summary: FTIR-based condition monitoring of lubricating oils — ASTM E2412 toolkit
 Author: Nahuel Mendez
 Author-email: Nahuel Mendez <nahueldanielmendez@gmail.com>
 License: MIT
 Project-URL: Homepage, https://github.com/NahueMendez/oilftir
 Project-URL: LinkedIn, https://www.linkedin.com/in/ingnahuelmendez/
+Keywords: ftir,astm-e2412,lubricating-oil,condition-monitoring,spectroscopy,tribology
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Science/Research
+Classifier: Intended Audience :: Manufacturing
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Scientific/Engineering :: Chemistry
+Classifier: Topic :: Scientific/Engineering :: Physics
 Requires-Python: >=3.10
 Description-Content-Type: text/markdown
+License-File: LICENSE
 Requires-Dist: numpy
 Requires-Dist: pandas
 Requires-Dist: scipy
@@ -17,6 +29,7 @@ Requires-Dist: pybaselines
 Provides-Extra: specio
 Requires-Dist: specio; extra == "specio"
 Dynamic: author
+Dynamic: license-file
 Dynamic: requires-python
 
 # oilftir
@@ -72,7 +85,7 @@ pip install -e .
 ## Quick start
 
 ```python
-from oilftir import load_spectrum, remove_baseline, astm_areas
+from oilftir.astm_utils import load_spectrum, remove_baseline, astm_areas
 
 # Load and correct a spectrum
 df, meta = load_spectrum("used_oil.csv", magnitude="A")
@@ -208,16 +221,49 @@ plot_spectra(data_dict, title, xlim, ylim_A, ylim_T, save_path)
 Contributions are welcome. Please open an issue or pull request on GitHub.
 
 ---
+## Authors
+`oilftir` was developed at the Chemistry Laboratory of CENADIF ([Centro Nacional de Desarrollo e Innovación Ferroviaria](https://www.argentina.gob.ar/transporte/fase/cenadif)), Argentina, in the context of used-oil condition monitoring for the local railway industry.
+
+### Lead developer
+
+**Nahuel Mendez** — R&D Engineer/Physical Data Scientist, CENADIF |
+
+[![GitHub](https://img.shields.io/badge/GitHub-NahueMendez-181717?logo=github)](https://github.com/NahueMendez)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-ingnahuelmendez-0A66C2?logo=linkedin)](https://www.linkedin.com/in/ingnahuelmendez/)
+[![Email](https://img.shields.io/badge/Email-nahueldanielmendez%40gmail.com-D14836?logo=gmail)](mailto:nahueldanielmendez@gmail.com)
+
+
+### Collaborators
+
+| Name | Role |
+| :--- | :--- |
+| **Hernán Gomez Molino**, Eng. | Head of Laboratories, CENADIF |
+| **Leandro Asens**, Eng. | Head of the Chemistry Laboratory, CENADIF |
+---
 
 ## Citing
 
-If you use `oilftir` in academic work, please cite the ASTM standard it
-implements:
+If you use `oilftir` in your research or academic work, please cite both the ASTM standard and this software library:
 
-> ASTM E2412-23, *Standard Practice for Condition Monitoring of Used
-> Lubricants by Trend Analysis Using Fourier Transform Infrared (FT-IR)
-> Spectrometry*, ASTM International, West Conshohocken, PA.
+### 1. The Software Library
+> Mendez, N., Gomez Molino, H., & Asens, L. (2026). *oilftir: A Python library for FTIR-based condition monitoring of lubricating oils following ASTM E2412*. https://doi.org/10.5281/zenodo.20137147
 
+### 2. The Implemented Standard
+> ASTM E2412-23, *Standard Practice for Condition Monitoring of Used Lubricants by Trend Analysis Using Fourier Transform Infrared (FT-IR) Spectrometry*, ASTM International, West Conshohocken, PA.
+
+You can also use the following BibTeX entry for your reference manager:
+
+```bibtex
+@software{mendez_oilftir_2026,
+  author       = {Mendez, Nahuel and Gomez Molino, Hern{\'a}n and Asens, Leandro},
+  title        = {oilftir: A Python library for FTIR-based condition monitoring of lubricating oils following ASTM E2412},
+  month        = may,
+  year         = 2026,
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.20137147},
+  url          = {doi.org}
+}
+```
 ---
 
 ## License
@@ -225,7 +271,7 @@ implements:
 ```
 MIT License
 
-Copyright (c) 2025 oilftir contributors
+Copyright (c) 2026 oilftir contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
