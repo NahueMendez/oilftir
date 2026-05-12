@@ -212,7 +212,7 @@ Contributions are welcome. Please open an issue or pull request on GitHub.
 If you use `oilftir` in your research or academic work, please cite both the ASTM standard and this software library:
 
 ### 1. The Software Library
-> Mendez, N., Gomez Molino, H., & Asens, L. (2026). *oilftir: A Python library for FTIR-based condition monitoring of lubricating oils following ASTM E2412*. Zenodo. doi.org
+> Mendez, N., Gomez Molino, H., & Asens, L. (2026). *oilftir: A Python library for FTIR-based condition monitoring of lubricating oils following ASTM E2412*. https://doi.org/10.5281/zenodo.20137146
 
 ### 2. The Implemented Standard
 > ASTM E2412-23, *Standard Practice for Condition Monitoring of Used Lubricants by Trend Analysis Using Fourier Transform Infrared (FT-IR) Spectrometry*, ASTM International, West Conshohocken, PA.
@@ -226,7 +226,7 @@ You can also use the following BibTeX entry for your reference manager:
   month        = may,
   year         = 2026,
   publisher    = {Zenodo},
-  doi          = {10.5281/zenodo.XXXXXXX},
+  doi          = {10.5281/zenodo.20137146},
   url          = {doi.org}
 }
 ```
