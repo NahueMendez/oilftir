@@ -67,7 +67,7 @@ print(f"\n  Estimated water content : {water_pct:.2f} % v/v")
 # ---------------------------------------------------------------------------
 # 5. Reference subtraction (used oil vs. fresh oil baseline)
 # ---------------------------------------------------------------------------
-df_ref, _ = load_spectrum("data/fresh_oil.csv", magnitude="A")
+df_ref, _ = load_spectrum("data/fresh_oil.txt", magnitude="A")
 df_ref     = remove_baseline(df_ref, units="A")
 
 y_diff, k, y_ref_scaled = subtract_reference(
@@ -103,10 +103,10 @@ plot_spectra(
 # top_n    : number of best matches to display
 # extension: glob pattern; change to "*.txt" for text-based libraries
 results = library_search(
-    query_path="data/unknown_oil.csv",
+    query_path="data/unknown_oil.sp",
     library_dir="data/library/",
     top_n=5,
-    extension="*.csv",
+    extension="*.sp",
 )
 
 print("\n--- Top HQI matches ---")
