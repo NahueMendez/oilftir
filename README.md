@@ -25,7 +25,11 @@ plots.
 | **Plotting** | Dual-panel (absorbance + transmittance), multi-spectrum overlay |
 
 ---
+## Documentation
 
+https://oilftir.readthedocs.io/en/latest/
+
+---
 ## Installation
 
 ```bash
